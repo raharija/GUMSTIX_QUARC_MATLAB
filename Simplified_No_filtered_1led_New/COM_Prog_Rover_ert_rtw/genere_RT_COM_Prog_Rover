@@ -1,0 +1,106 @@
+###########################################################################
+#
+# Author: Augustin Manecy, Bruno Boisseau
+#
+# Copyright (C) 2011-2014 Augustin Manecy, Bruno Boisseau
+#
+# augustin.manecy@gmail.com
+# bruno.boisseau@gipsa-lab.fr
+#
+###########################################################################
+#
+# This file is part of RT-MaG Toolbox.
+#
+#   RT-MaG Toolbox is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   RT-MaG Toolbox is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with RT-MaG Toolbox.  If not, see <http://www.gnu.org/licenses/>.
+#
+###########################################################################
+#
+# This version of GPL is at https://www.gnu.org/licenses/gpl-3.0.txt
+#
+###########################################################################
+
+#!/bin/sh
+ 
+# $1 (optional) contain the macro to enable "printf" 		(ECHO_PRINTF)
+# $2 (optional) contain the macro to enable "fprintf"		(ECHO_FPRINTF)
+# $3 (optional) contain the macro to enable "time printf"	(ECHO_TIME_PRINTF)
+# $4 (optional) contain the macro to enable "time fprintf"	(ECHO_TIME_FPRINTF)
+ 
+if test $# -gt 4
+	then
+		echo "SYNTAX ERROR: $0 <ECHO_PRINTF (optional)> <ECHO_FPRINTF (optional)> <ECHO_TIME_PRINTF (optional)> <ECHO_TIME_FPRINTF (optional)>"
+fi
+ 
+# clean previous version of files
+	echo cleaning directory...
+	# clean common includes and library
+	# rm rtwtypes.h time_tools.c time_tools.h library_udp.h library_udp.c
+	# clean specific files
+    rm -rf ./Sources/COM_Prog_Rover_sources       # code generated automatically
+    mkdir ./Sources/COM_Prog_Rover_sources        # code generated automatically
+# unzip new archive
+	echo unzipping...
+ 
+    eval "unzip ./Archives/COM_Prog_Rover_sources.zip -d ./Sources/COM_Prog_Rover_sources" # code generated automatically
+# build the program and genere binary
+	#nb_macro is defined into UpToDateModel and 
+	if test "$nb_macro" -eq 0
+		then
+			echo "No macro defined!"
+			compilation_cmd="gcc"
+	fi
+	if test "$nb_macro" -eq 1
+		then
+			echo "Macro $macro_1 defined!" 
+			macro_1="-D$macro_1"
+			compilation_cmd="gcc $macro_1"
+	fi
+	if test "$nb_macro" -eq 2
+		then
+			echo "Macro $macro_1 $macro_2 defined!" 
+			macro_1=-D"$macro_1"
+			macro_2=-D"$macro_2"
+			compilation_cmd="gcc $macro_1 $macro_2"
+	fi
+	if test "$nb_macro" -eq 3
+		then
+			echo "Macro $macro_1 $macro_2 $macro_3 defined!" 
+			macro_1=-D"$macro_1"
+			macro_2=-D"$macro_2"
+			macro_3=-D"$macro_3"
+			compilation_cmd = "gcc $macro_1 $macro_2 $macro_3"
+	fi
+	if test "$nb_macro" -eq 4
+		then
+			echo "Macro $macro_1 $macro_2 $macro_3 $macro_4 defined!" 
+			macro_1=-D"$macro_1"
+			macro_2=-D"$macro_2"
+			macro_3=-D"$macro_3"
+			macro_4=-D"$macro_4"
+			compilation_cmd="gcc $macro_1 $macro_2 $macro_3 $macro_4"
+	fi
+	
+	echo go in compilation folder...
+    cd ./Sources/COM_Prog_Rover_sources  # code generated automatically
+	
+	# compilation options
+	compilation_options="-Wall -Wextra -O2 -lm -lrt -pthread"
+	
+	echo compiling...	
+	eval source ./genere_makefile.sh
+	make all
+	echo compiling...
+	# go back to initial directory
+	cd ../..
+	
